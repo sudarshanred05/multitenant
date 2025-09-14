@@ -4,7 +4,7 @@ class ShopifyService {
   constructor(storeName, accessToken) {
     this.storeName = storeName;
     this.accessToken = accessToken;
-    this.baseURL = `https://${storeName}.myshopify.com/admin/api/2023-10`;
+    this.baseURL = `https://${storeName}.myshopify.com/admin/api/${process.env.SHOPIFY_API_VERSION || '2023-10'}`;
   }
 
   async makeRequest(endpoint, params = {}) {
