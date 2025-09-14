@@ -284,37 +284,52 @@ DB_NAME=shopify_insights_prod
 # ... other production settings
 ```
 
-### Heroku Deployment
+### Railway Deployment (Recommended)
 
-1. **Prepare for Heroku**:
+Railway is a modern deployment platform that's perfect for full-stack applications. Here's how to deploy both services:
+
+1. **Install Railway CLI**:
 ```bash
-# Create Procfile
-echo "web: node src/server.js" > backend/Procfile
+npm install -g @railway/cli
 ```
 
-2. **Deploy Backend**:
+2. **Login to Railway**:
+```bash
+railway login
+```
+
+3. **Deploy Backend**:
 ```bash
 cd backend
-heroku create your-app-name-backend
-heroku addons:create cleardb:ignite
-heroku config:set NODE_ENV=production
-heroku config:set JWT_SECRET=your-production-jwt-secret
-# ... set other environment variables
-git subtree push --prefix=backend heroku main
+railway init
+railway up
 ```
 
-3. **Deploy Frontend**:
+4. **Configure Environment Variables**:
+In your Railway dashboard, add these environment variables:
+- `NODE_ENV=production`
+- `JWT_SECRET=your-production-jwt-secret`
+- `DB_HOST=your-railway-mysql-host`
+- `DB_NAME=railway`
+- `DB_USER=root` 
+- `DB_PASS=your-mysql-password`
+- `SHOPIFY_API_KEY=your-shopify-api-key`
+- `SHOPIFY_API_SECRET=your-shopify-api-secret`
+- `CORS_ORIGIN=https://your-frontend-domain.railway.app`
+
+5. **Deploy Frontend**:
 ```bash
-cd frontend
-# Build for production
-npm run build
-
-# Deploy to Netlify, Vercel, or Heroku
-# Update REACT_APP_API_URL to point to your backend
+cd ../frontend
+railway init
+railway up
 ```
 
-### Render Deployment
+6. **Update Frontend Environment**:
+Add `REACT_APP_API_URL=https://your-backend-domain.railway.app` to your frontend Railway environment variables.
 
+### Alternative Deployment Options
+
+**Render Deployment**:
 1. **Backend on Render**:
    - Connect your GitHub repository
    - Set build command: `cd backend && npm install`
@@ -326,16 +341,14 @@ npm run build
    - Set build command: `cd frontend && npm install && npm run build`
    - Set publish directory: `frontend/build`
 
-### Railway Deployment
-
+**Netlify + Render**:
 ```bash
-# Install Railway CLI
-npm install -g @railway/cli
+# Deploy frontend to Netlify
+cd frontend
+npm run build
+# Upload build folder to Netlify or connect GitHub repo
 
-# Login and deploy
-railway login
-railway init
-railway up
+# Deploy backend to Render as above
 ```
 
 ## 🔧 Configuration
@@ -384,7 +397,7 @@ npm test
 
 ### API Testing with Postman
 
-Import the Postman collection from `docs/postman-collection.json`
+Use Postman or any API testing tool to test the endpoints listed in this README.
 
 ## 📝 Development
 
@@ -458,8 +471,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support and questions:
 - Create an issue in the GitHub repository
-- Check the documentation in the `docs/` folder
-- Review API examples in `docs/api-examples.md`
+- Check this README.md for comprehensive documentation
+- Review the API endpoints and examples listed above
 
 ## 🙏 Acknowledgments
 
