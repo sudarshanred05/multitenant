@@ -38,7 +38,7 @@ const SyncButton = ({ onSyncComplete }) => {
       {syncing ? (
         <>
           <LoadingSpinner size="small" className="mr-2" />
-          Syncing...
+          Syncing... (This may take 1-2 minutes)
         </>
       ) : (
         <>
