@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { analyticsAPI } from '../services/api';
@@ -13,10 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
   BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell
+  Bar
 } from 'recharts';
 import StatCard from '../components/StatCard';
 import SyncButton from '../components/SyncButton';
@@ -33,11 +30,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [selectedDateRange, setSelectedDateRange] = useState(getDateRanges().last30Days);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, [selectedDateRange]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     try {
       const dateParams = {
@@ -62,7 +55,11 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDateRange]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   const handleSyncComplete = () => {
     fetchDashboardData();

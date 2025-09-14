@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authAPI } from '../services/api';
 
 const AuthContext = createContext();
@@ -16,6 +16,19 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const verifyToken = useCallback(async () => {
+    try {
+      const response = await authAPI.getProfile();
+      setUser(response.data.data.tenant);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      logout();
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
@@ -28,20 +41,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       setLoading(false);
     }
-  }, []);
-
-  const verifyToken = async () => {
-    try {
-      const response = await authAPI.getProfile();
-      setUser(response.data.data.tenant);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Token verification failed:', error);
-      logout();
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [verifyToken]);
 
   const login = async (email, password) => {
     try {

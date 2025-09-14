@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
 import { syncAPI } from '../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from './LoadingSpinner';
 
 const SyncButton = ({ onSyncComplete }) => {
   const [syncing, setSyncing] = useState(false);
-  const { user } = useAuth();
 
   const handleSync = async () => {
     setSyncing(true);
