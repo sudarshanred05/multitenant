@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+.recharts-tooltip-wrapper {
+  @apply bg-white border border-gray-200 rounded-lg shadow-lg;
+}
+
+.recharts-tooltip-label {
+  @apply text-gray-700 font-medium;
+}
+
+.recharts-tooltip-item {
+  @apply text-gray-600;
+}
+
+/* Loading animations */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Toast customizations */
+.Toastify__toast {
+  @apply rounded-lg;
+}
+
+.Toastify__toast--success {
+  @apply bg-green-500;
+}
+
+.Toastify__toast--error {
+  @apply bg-red-500;
+}
+
+.Toastify__toast--info {
+  @apply bg-blue-500;
+}
+
+.Toastify__toast--warning {
+  @apply bg-yellow-500;
+}
