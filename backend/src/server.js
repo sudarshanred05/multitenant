@@ -31,7 +31,7 @@ app.use(compression());
 
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'https://multitenant.up.railway.app',
+  origin: process.env.CORS_ORIGIN || '*',
   credentials: true
 }));
 
