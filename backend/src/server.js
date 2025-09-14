@@ -94,10 +94,11 @@ async function startServer() {
     console.log('Database connection established successfully.');
 
 
-    if (process.env.NODE_ENV !== 'production') {
-      await sequelize.sync({ alter: true });
-      console.log('Database synced successfully.');
-    }
+    // Force sync in production to create tables in Railway database
+    await sequelize.sync({ alter: true });
+    console.log('Database synced successfully.');
+    
+    console.log('✅ Tables created in Railway database schema: railway');
 
 
     const server = app.listen(PORT, () => {

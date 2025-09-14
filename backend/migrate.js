@@ -1,4 +1,14 @@
 require('dotenv').config();
+
+// Force environment variables for Railway
+process.env.NODE_ENV = 'production';
+process.env.DB_HOST = 'mysql.railway.internal';
+process.env.DB_NAME = 'railway';
+process.env.DB_USER = 'root';
+process.env.DB_PASS = 'eZXStDOCTbOpfuqRpEqAHfraEbKWIaXp';
+process.env.DB_PORT = '3306';
+process.env.DB_DIALECT = 'mysql';
+
 const { sequelize } = require('./src/models');
 
 async function runMigrations() {
