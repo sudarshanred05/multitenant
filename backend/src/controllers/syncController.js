@@ -1,7 +1,7 @@
 const { Tenant } = require('../models');
-const DataSyncServiceOptimized = require('../services/dataSyncServiceOptimized');
+const DataSyncService = require('../services/dataSyncService');
 
-const dataSyncService = new DataSyncServiceOptimized();
+const dataSyncService = new DataSyncService();
 
 const syncData = async (req, res) => {
   try {
