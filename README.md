@@ -5,6 +5,9 @@ Overview
 --------
 Multi-tenant Shopify data ingestion and analytics service. The backend (Node.js/Express with Sequelize and MySQL) ingests Customers, Products, Orders, and Order Items from the Shopify Admin API. The frontend (React) provides authentication, manual sync, and an analytics dashboard.
 
+Live deployment
+- Frontend URL: https://multitenant.up.railway.app/
+
 Contents
 --------
 - Setup instructions
