@@ -23,10 +23,9 @@ class DataSyncServiceBulk {
 
       const shopify = new ShopifyService(tenant.shopifyStoreName, tenant.shopifyAccessToken);
       
-      // Reset stats
       this.resetStats();
 
-      // Sync data using bulk operations (much faster!)
+      
       await this.syncCustomersBulk(tenant, shopify);
       await this.syncProductsBulk(tenant, shopify);
       await this.syncOrdersBulk(tenant, shopify);
