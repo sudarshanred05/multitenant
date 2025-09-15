@@ -17,38 +17,89 @@ const sequelize = new Sequelize({
   }
 });
 
-// Import models
-const Tenant = require('./src/models/Tenant');
-const Customer = require('./src/models/Customer');
-const Product = require('./src/models/Product');
-const Order = require('./src/models/Order');
-const OrderItem = require('./src/models/OrderItem');
-
-// Initialize models
-Tenant.init(Tenant.getAttributes(), { sequelize, modelName: 'Tenant', tableName: 'tenants' });
-Customer.init(Customer.getAttributes(), { sequelize, modelName: 'Customer', tableName: 'customers' });
-Product.init(Product.getAttributes(), { sequelize, modelName: 'Product', tableName: 'products' });
-Order.init(Order.getAttributes(), { sequelize, modelName: 'Order', tableName: 'orders' });
-OrderItem.init(OrderItem.getAttributes(), { sequelize, modelName: 'OrderItem', tableName: 'order_items' });
-
-// Set up associations
-Customer.belongsTo(Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-Product.belongsTo(Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-Order.belongsTo(Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-Order.belongsTo(Customer, { foreignKey: 'customerId', as: 'customer' });
-OrderItem.belongsTo(Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-OrderItem.belongsTo(Order, { foreignKey: 'orderId', as: 'order' });
-OrderItem.belongsTo(Product, { foreignKey: 'productId', as: 'product' });
-
 async function runMigrations() {
   try {
     console.log('Connecting to Railway database...');
     await sequelize.authenticate();
     console.log('✅ Database connection established successfully.');
 
-    console.log('Running database sync...');
-    await sequelize.sync({ force: false, alter: true });
-    console.log('✅ Database tables created/updated successfully.');
+    console.log('Adding performance indexes...');
+
+    // Add indexes for better performance
+    try {
+      // Customer table indexes
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_customers_tenant_shopify_id 
+        ON customers (tenantId, shopifyCustomerId)
+      `);
+      
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_customers_tenant_id 
+        ON customers (tenantId)
+      `);
+
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_customers_email 
+        ON customers (email)
+      `);
+
+      // Product table indexes
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_products_tenant_shopify_id 
+        ON products (tenantId, shopifyProductId)
+      `);
+
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_products_tenant_id 
+        ON products (tenantId)
+      `);
+
+      // Order table indexes
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_orders_tenant_shopify_id 
+        ON orders (tenantId, shopifyOrderId)
+      `);
+
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_orders_tenant_id 
+        ON orders (tenantId)
+      `);
+
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_orders_customer_id 
+        ON orders (customerId)
+      `);
+
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_orders_created_at 
+        ON orders (shopifyCreatedAt)
+      `);
+
+      // OrderItem table indexes
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_orderitems_tenant_shopify_id 
+        ON orderitems (tenantId, shopifyOrderItemId)
+      `);
+
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_orderitems_tenant_id 
+        ON orderitems (tenantId)
+      `);
+
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_orderitems_order_id 
+        ON orderitems (orderId)
+      `);
+
+      await sequelize.query(`
+        CREATE INDEX IF NOT EXISTS idx_orderitems_product_id 
+        ON orderitems (productId)
+      `);
+
+      console.log('✅ Performance indexes added successfully!');
+    } catch (indexError) {
+      console.log('Note: Some indexes may already exist, continuing...');
+    }
 
     console.log('Migration completed successfully!');
     process.exit(0);
