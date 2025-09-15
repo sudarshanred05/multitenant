@@ -1,10 +1,8 @@
 const { Tenant } = require('../models');
-const DataSyncService = require('../services/dataSyncService');
 const DataSyncServiceBulk = require('../services/dataSyncServiceBulk');
 
-// Choose which sync service to use
-const USE_BULK_SYNC = process.env.USE_BULK_SYNC === 'true' || process.env.NODE_ENV === 'production';
-const dataSyncService = USE_BULK_SYNC ? new DataSyncServiceBulk() : new DataSyncService();
+// Use the bulk sync service by default
+const dataSyncService = new DataSyncServiceBulk();
 
 const syncData = async (req, res) => {
   try {

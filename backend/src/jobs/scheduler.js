@@ -1,10 +1,14 @@
 const cron = require('node-cron');
 const { Tenant } = require('../models');
 const DataSyncService = require('../services/dataSyncService');
+const DataSyncServiceBulk = require('../services/dataSyncServiceBulk');
+
+// Choose which sync service to use based on environment variable
+const USE_BULK_SYNC = process.env.USE_BULK_SYNC === 'true' || process.env.NODE_ENV === 'production';
 
 class SchedulerService {
   constructor() {
-    this.dataSyncService = new DataSyncService();
+    this.dataSyncService = USE_BULK_SYNC ? new DataSyncServiceBulk() : new DataSyncService();
     this.jobs = new Map();
   }
 
