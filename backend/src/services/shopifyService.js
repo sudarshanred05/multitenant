@@ -47,30 +47,7 @@ class ShopifyService {
     return data.products;
   }
 
-  async getCheckouts() {
-    try {
-      const data = await this.makeRequest('/checkouts.json');
-      return data.checkouts || [];
-    } catch (error) {
-      // Checkouts API might not be available for all plans
-      console.warn('Checkouts API not available:', error.message);
-      return [];
-    }
-  }
 
-  async getAbandonedCheckouts(sinceId = null) {
-    try {
-      const params = sinceId ? { since_id: sinceId } : {};
-      const data = await this.makeRequest('/checkouts.json', {
-        ...params,
-        status: 'abandoned'
-      });
-      return data.checkouts || [];
-    } catch (error) {
-      console.warn('Abandoned checkouts API not available:', error.message);
-      return [];
-    }
-  }
 
   async getOrdersByDate(startDate, endDate) {
     const params = {

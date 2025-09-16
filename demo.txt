@@ -1,0 +1,90 @@
+for (const shopifyProduct of shopifyProducts) {
+   const [product, created] = await Product.findOrCreate({
+    where: { shopifyProductId: shopifyProduct.id }
+  });
+
+  if (!created) {
+    await product.update(productData);
+  }
+}
+
+
+
+
+
+const productData = shopifyProducts.map(sp => ({
+  tenantId: tenant.id,
+  shopifyProductId: sp.id,
+  title: sp.title,
+  // ... all fields
+}));
+
+await Product.bulkCreate(productData, {
+  updateOnDuplicate: ['title', 'status', 'vendor', ...]
+});
+
+
+
+
+
+
+Naive Way: One by One
+
+You loop through each item and make separate database calls for each.
+
+Customers:
+50 customers × 2 calls each = 100 calls
+(1 call to check if exists, 1 call to insert/update)
+
+Products:
+30 products × 2 calls each = 60 calls
+
+Orders:
+80 orders × 3 calls each = 240 calls
+because each order also needs a lookup for its customer
+
+Order Items:
+200 items × 2 calls each = 400 calls
+
+Total = 800 individual database calls
+
+Time Calculation for Naive Way
+
+Local development (DB on your computer):
+Each call is very fast, about 0.001 sec (1 millisecond).
+800 × 0.001 = 0.8 sec total → feels instant.
+
+
+Production (Railway):
+Each call = 0.07 sec (70 ms).
+800 × 0.07 = 56 sec total  → feels super slow.
+
+
+
+
+
+
+Optimized Way: Bulk Inserts
+
+Instead of calling DB 800 times, you group everything into big batches.
+
+All Customers in 1 call
+
+All Products in 1 call
+
+All Orders in 1 call
+
+All Order Items in 1 call
+
+Plus 2 small lookups (like mapping relationships)
+
+👉 Total = 6 database calls
+
+🕑 Time Calculation for Bulk Way
+
+Production (Railway):
+Each call still takes 0.07 sec.
+→ 6 × 0.07 = 0.42 sec total network time
+
+Some DB processing time (because bulk calls are heavier).
+Final real-world = 10–15 sec total.

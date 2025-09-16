@@ -89,7 +89,7 @@ JWT_EXPIRES_IN=7d
 # Shopify Configuration
 SHOPIFY_API_KEY=your_shopify_api_key
 SHOPIFY_API_SECRET=your_shopify_api_secret
-SHOPIFY_SCOPES=read_customers,read_orders,read_products,read_checkouts
+SHOPIFY_SCOPES=read_customers,read_orders,read_products
 
 # CORS (will be updated after frontend deployment)
 CORS_ORIGIN=https://your-frontend-domain.railway.app
